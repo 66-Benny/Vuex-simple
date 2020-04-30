@@ -1,9 +1,9 @@
 import Vue from "vue";
 import Router from "vue-router";
-import A from "@/components/A";
-import B from "@/components/B";
-import C from "@/components/C";
-import D from "@/components/D";
+import A from "../page/A";
+import B from "../page/B";
+import C from "../page/C";
+import D from "../page/D";
 
 Vue.use(Router);
 

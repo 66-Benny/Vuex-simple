@@ -34,8 +34,8 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import headerCard from "./header-card";
-import bodyCard from "./body-card";
+import headerCard from "../components/header-card";
+import bodyCard from "../components/body-card";
 
 const FETCH_TABLEHEADER_ACTION =
   "report/provincialLogisticsReport/fetchTableHeaderData";

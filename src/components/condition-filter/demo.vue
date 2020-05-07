@@ -52,6 +52,25 @@
               <el-radio label="线下场地免费"></el-radio>
             </el-radio-group>
           </el-form-item>
+          <el-form-item label="活动形式" prop="desc">
+            <el-input type="textarea" v-model="form.desc"></el-input>
+          </el-form-item>
+          <el-form-item label="活动性质" prop="size">
+            <el-checkbox-group v-model="form.size">
+              <el-checkbox-button
+                label="美食/餐厅线上活动"
+                name="type"
+              ></el-checkbox-button>
+              <el-checkbox-button
+                label="地推活动"
+                name="type"
+              ></el-checkbox-button>
+              <el-checkbox-button
+                label="线下主题活动"
+                name="type"
+              ></el-checkbox-button>
+            </el-checkbox-group>
+          </el-form-item>
         </template>
         <template slot="tagList">
           <condition-filter
@@ -81,7 +100,9 @@ export default {
         date: [],
         delivery: false,
         type: [],
-        resource: ""
+        resource: "",
+        desc: "",
+        size: []
       },
       tagList: {},
       fields: []

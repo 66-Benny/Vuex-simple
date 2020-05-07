@@ -35,7 +35,7 @@ export default {
           this.getFormItemLabelName(key);
           this.list[key] = {
             title: this.getFormItemLabelName(key),
-            value: this.form[key]
+            value: this.getFormItemValue(key)
           };
         } else {
           delete this.list[key];
@@ -77,6 +77,28 @@ export default {
         component => component.prop === key
       );
       return item.label;
+    },
+    getFormItemValue(key) {
+      const item = this.arrayFind(
+        this.$parent.$children,
+        component => component.prop === key
+      );
+      const itemClassName = item.$children[1].$el.className;
+      if (itemClassName === "el-checkbox-group") {
+        return item.fieldValue;
+      } else if (itemClassName === "el-select el-select--small") {
+        return item.$children[1].selectedLabel;
+      } else if (itemClassName === "el-input el-input--small") {
+        return item.fieldValue;
+      } else if (itemClassName === "el-col el-col-11") {
+        return item.fieldValue;
+      } else if (itemClassName === "el-switch") {
+        return item.fieldValue;
+      } else if (itemClassName === "el-radio-group") {
+        return item.fieldValue;
+      } else if (itemClassName === "el-textarea el-input--small") {
+        return item.fieldValue;
+      }
     },
     closeItem(sourceItem, sourceKey) {
       this.$emit("closeItem", sourceItem, sourceKey);

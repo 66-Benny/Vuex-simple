@@ -3,7 +3,7 @@ import Router from "vue-router";
 import A from "../page/A";
 import B from "../page/B";
 import C from "../page/C";
-import D from "../page/D";
+import E from "../page/E";
 
 Vue.use(Router);
 
@@ -15,13 +15,17 @@ export default new Router({
       children: [
         {
           path: "/B",
-          component: B,
-          children: [
-            { path: "/B/C", component: C },
-            { path: "/B/D", component: D }
-          ]
+          component: B
+        },
+        {
+          path: "/C",
+          component: C
         }
       ]
+    },
+    {
+      path: "/E",
+      component: E
     }
   ]
 });

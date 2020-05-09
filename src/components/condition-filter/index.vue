@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import _format from "../../common/common";
 export default {
   name: "ConditionFilter",
   props: {
@@ -57,6 +58,7 @@ export default {
       for (var key in obj) {
         if (hasOwnProperty.call(obj, key)) return false;
       }
+      if (obj == "") return true;
       return true;
     },
     arrayFind(arr, pred) {
@@ -79,25 +81,29 @@ export default {
       return item.label;
     },
     getFormItemValue(key) {
+      //debugger;
       const item = this.arrayFind(
         this.$parent.$children,
         component => component.prop === key
       );
       const itemClassName = item.$children[1].$el.className;
-      if (itemClassName === "el-checkbox-group") {
-        return item.fieldValue;
-      } else if (itemClassName === "el-select el-select--small") {
+      if (itemClassName.indexOf("el-checkbox-group") !== -1) {
+        return item.$children[1].value;
+      } else if (itemClassName.indexOf("el-select") !== -1) {
         return item.$children[1].selectedLabel;
-      } else if (itemClassName === "el-input el-input--small") {
-        return item.fieldValue;
-      } else if (itemClassName === "el-col el-col-11") {
-        return item.fieldValue;
-      } else if (itemClassName === "el-switch") {
-        return item.fieldValue;
-      } else if (itemClassName === "el-radio-group") {
-        return item.fieldValue;
-      } else if (itemClassName === "el-textarea el-input--small") {
-        return item.fieldValue;
+      } else if (itemClassName.indexOf("el-input") !== -1) {
+        return item.$children[1].value;
+      } else if (itemClassName.indexOf("el-col-11") !== -1) {
+        return _format.transformDateValue(
+          item.fieldValue,
+          item.$children[1].$el.innerText
+        );
+      } else if (itemClassName.indexOf("el-switch") !== -1) {
+        return _format.transformSwitchValue(item.fieldValue);
+      } else if (itemClassName.indexOf("el-radio-group") !== -1) {
+        return item.$children[1].value;
+      } else if (itemClassName.indexOf("el-textarea") !== -1) {
+        return item.$children[1].value;
       }
     },
     closeItem(sourceItem, sourceKey) {
@@ -105,6 +111,15 @@ export default {
     }
   }
 };
+/*
+大家好，我是 Web 前端开发工程师，罗鹏飞。拥有6年的开发工作经验，在 IBM 工作有5年时间。
+
+在 IBM 欧美内部项目，使用 ECM，V18，Bootstrap等技术开发公司的私有云、公有云、混合云的产品页面
+在 IBM 华为项目，使用 React、Ant-Design开发部门的后台管理界面，可以方便运维人员可视化的查看页面性能方面的数据情况
+在 IBM 移动项目，使用 Vue、SCM-UI、eChart等技术开发报表页面，并且会开发一些新的组件，以满足现有框架无法满足的功能
+
+所掌握的技术栈主要有：Vue / Vuex / React / Element-UI / Ant-Design / ES6 / Sass / 微信小程序等技术
+*/
 </script>
 <style lang="scss" scoped>
 .tagArea {

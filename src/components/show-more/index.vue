@@ -70,6 +70,7 @@ export default {
     z-index: 10;
   }
   .expander {
+    user-select: none;
     float: right;
     cursor: pointer;
   }

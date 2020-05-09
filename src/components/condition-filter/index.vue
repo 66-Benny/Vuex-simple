@@ -1,8 +1,31 @@
 <template>
   <div class="tagArea">
-    <div class="tagItem" v-for="(item, key) in tagList" :key="key">
+    <div
+      class="tagItem"
+      v-for="(item, key) in tagList"
+      :key="key"
+      v-if="isArray(item.value)"
+    >
       <span>{{ item.title }}：</span>
-      <span>{{ item.value }}</span>
+      <span v-for="child of item.value" :key="child">
+        <span>{{ child }}</span>
+        <i
+          @click="closeItem(child, key)"
+          name="close"
+          class="el-icon-close"
+          content="关闭"
+        ></i>
+        <span> | </span>
+      </span>
+    </div>
+    <div
+      class="tagItem"
+      v-for="(item, key) in tagList"
+      :key="key"
+      v-if="!isArray(item.value)"
+    >
+      <span>{{ item.title }}：</span>
+      <span>{{ item.value }} </span>
       <i
         @click="closeItem(item, key)"
         name="close"
@@ -11,7 +34,6 @@
       ></i>
     </div>
   </div>
-  <!-- <span v-for="item in tagList">{{ item.title }}|{{ item.value }}</span> -->
 </template>
 
 <script>
@@ -32,11 +54,11 @@ export default {
   computed: {
     tagList() {
       for (let key in this.form) {
-        if (!this.isEmpty(this.form[key])) {
-          this.getFormItemLabelName(key);
+        if (!_format.isEmpty(this.form[key])) {
+          const childrenValue = this.$parent.$children;
           this.list[key] = {
-            title: this.getFormItemLabelName(key),
-            value: this.getFormItemValue(key)
+            title: _format.getFormItemLabelName(key, childrenValue),
+            value: _format.getFormItemValue(key, childrenValue)
           };
         } else {
           delete this.list[key];
@@ -46,68 +68,16 @@ export default {
     }
   },
   methods: {
-    isEmpty(obj) {
-      var hasOwnProperty = Object.prototype.hasOwnProperty;
-      // 本身为空直接返回true
-      if (obj == null) return true;
-      // 然后可以根据长度判断，在低版本的ie浏览器中无法这样判断。
-      if (obj.length > 0) return false;
-      if (obj.length === 0) return true;
-      if (obj) return false;
-      //最后通过属性长度判断。
-      for (var key in obj) {
-        if (hasOwnProperty.call(obj, key)) return false;
-      }
-      if (obj == "") return true;
-      return true;
-    },
-    arrayFind(arr, pred) {
-      const idx = this.arrayFindIndex(arr, pred);
-      return idx !== -1 ? arr[idx] : undefined;
-    },
-    arrayFindIndex(arr, pred) {
-      for (let i = 0; i !== arr.length; ++i) {
-        if (pred(arr[i])) {
-          return i;
-        }
-      }
-      return -1;
-    },
-    getFormItemLabelName(key) {
-      const item = this.arrayFind(
-        this.$parent.$children,
-        component => component.prop === key
-      );
-      return item.label;
-    },
-    getFormItemValue(key) {
-      //debugger;
-      const item = this.arrayFind(
-        this.$parent.$children,
-        component => component.prop === key
-      );
-      const itemClassName = item.$children[1].$el.className;
-      if (itemClassName.indexOf("el-checkbox-group") !== -1) {
-        return item.$children[1].value;
-      } else if (itemClassName.indexOf("el-select") !== -1) {
-        return item.$children[1].selectedLabel;
-      } else if (itemClassName.indexOf("el-input") !== -1) {
-        return item.$children[1].value;
-      } else if (itemClassName.indexOf("el-col-11") !== -1) {
-        return _format.transformDateValue(
-          item.fieldValue,
-          item.$children[1].$el.innerText
-        );
-      } else if (itemClassName.indexOf("el-switch") !== -1) {
-        return _format.transformSwitchValue(item.fieldValue);
-      } else if (itemClassName.indexOf("el-radio-group") !== -1) {
-        return item.$children[1].value;
-      } else if (itemClassName.indexOf("el-textarea") !== -1) {
-        return item.$children[1].value;
-      }
-    },
     closeItem(sourceItem, sourceKey) {
-      this.$emit("closeItem", sourceItem, sourceKey);
+      console.log(sourceItem, sourceKey);
+      // this.$emit("closeItem", sourceItem, sourceKey);
+    },
+    isArray(val) {
+      console.log(val);
+
+      return Object.prototype.toString.call(val) === "[object Array]"
+        ? true
+        : false;
     }
   }
 };

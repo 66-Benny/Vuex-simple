@@ -86,7 +86,7 @@
 <script>
 import showMore from "../show-more/index";
 import conditionFilter from "../condition-filter/index";
-
+import _format from "../../common/common";
 export default {
   name: "demo",
   components: { showMore, conditionFilter },
@@ -110,27 +110,7 @@ export default {
   },
   methods: {
     onCloseItem(sourceItem, sourceKey) {
-      this.form[sourceKey] = this.getKeyType(sourceKey);
-    },
-    getKeyType(sourceKey) {
-      let key = Object.prototype.toString.call(this.form[sourceKey]);
-      let type = "";
-      if (key === "[object String]") {
-        type = "";
-      } else if (key === "[object Number]") {
-        type = 0;
-      } else if (key === "[object Boolean]") {
-        type = false;
-      } else if (key === "[object Undefined]") {
-        type = undefined;
-      } else if (key === "[object Null]") {
-        type = null;
-      } else if (key === "[object Date]") {
-        type = new Date();
-      } else if (key === "[object Array]") {
-        type = [];
-      }
-      return type;
+      this.form[sourceKey] = _format.getKeyType(sourceKey);
     }
   }
 };

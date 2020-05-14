@@ -1,13 +1,6 @@
-var that = this;
 export default {
-  transformSwitchValue(val) {
-    return val ? "是" : "否";
-  },
-  transformDateValue(val, innerText) {
-    return `${val[0]} ${innerText} ${val[1]}`;
-  },
-  getKeyType(sourceKey) {
-    let key = Object.prototype.toString.call(this.form[sourceKey]);
+  removeValue(sourceItem, sourceKey, sourceValue, form) {
+    let key = Object.prototype.toString.call(form[sourceKey]);
     let type = "";
     if (key === "[object String]") {
       type = "";
@@ -22,9 +15,25 @@ export default {
     } else if (key === "[object Date]") {
       type = new Date();
     } else if (key === "[object Array]") {
-      type = [];
+      const isTime = sourceValue[0].match(
+        /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/
+      );
+      if (isTime !== null) {
+        _.pullAllWith(form[sourceKey], sourceValue);
+      } else {
+        _.remove(form[sourceKey], function(n) {
+          return n === sourceItem;
+        });
+      }
+      type = [...form[sourceKey]];
     }
     return type;
+  },
+  transformSwitchValue(val) {
+    return val ? "是" : "否";
+  },
+  transformDateValue(val, innerText) {
+    return `${val[0]} ${innerText} ${val[1]}`;
   },
   isEmpty(obj) {
     var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -48,7 +57,7 @@ export default {
     );
     return item.label;
   },
-  getFormItemValue(key, childrenValue) {
+  getFormItemLabel(key, childrenValue) {
     const item = this.arrayFind(
       childrenValue,
       component => component.prop === key
@@ -57,26 +66,36 @@ export default {
     let itemValue = "";
     if (itemClassName.indexOf("el-checkbox-group") !== -1) {
       itemValue = item.$children[1].value;
-    } else if (itemClassName.indexOf("el-select") !== -1) {
+    }
+    if (itemClassName.indexOf("el-select") !== -1) {
       itemValue = item.$children[1].selectedLabel;
-    } else if (itemClassName.indexOf("el-input") !== -1) {
+    }
+    if (itemClassName.indexOf("el-input") !== -1) {
       itemValue = item.$children[1].value;
-    } else if (itemClassName.indexOf("el-col-11") !== -1) {
+    }
+    if (itemClassName.indexOf("el-range-editor") !== -1) {
       itemValue = this.transformDateValue(
         item.fieldValue,
         item.$children[1].$el.innerText
       );
-    } else if (itemClassName.indexOf("el-switch") !== -1) {
+    }
+    if (itemClassName.indexOf("el-switch") !== -1) {
       itemValue = this.transformSwitchValue(item.fieldValue);
-    } else if (itemClassName.indexOf("el-radio-group") !== -1) {
-      itemValue = item.$children[1].value;
-    } else if (itemClassName.indexOf("el-textarea") !== -1) {
+    }
+    if (itemClassName.indexOf("el-radio-group") !== -1) {
       itemValue = item.$children[1].value;
     }
-    // if (Object.prototype.toString.call(itemValue) === "[object String]") {
-    //   itemValue = itemValue.split();
-    // }
+    if (itemClassName.indexOf("el-textarea") !== -1) {
+      itemValue = item.$children[1].value;
+    }
     return itemValue;
+  },
+  getFormItemValue(key, childrenValue) {
+    const item = this.arrayFind(
+      childrenValue,
+      component => component.prop === key
+    );
+    return item.fieldValue;
   },
   arrayFind(arr, pred) {
     const idx = this.arrayFindIndex(arr, pred);

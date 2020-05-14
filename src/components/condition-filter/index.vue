@@ -4,30 +4,30 @@
       class="tagItem"
       v-for="(item, key) in tagList"
       :key="key"
-      v-if="isArray(item.value)"
+      v-if="isArray(item.label)"
     >
-      <span>{{ item.title }}：</span>
-      <span v-for="child of item.value" :key="child">
+      <span>{{ item.title }}：:</span>
+      <span v-for="child of item.label" :key="child">
         <span>{{ child }}</span>
         <i
-          @click="closeItem(child, key)"
+          @click="closeItem(child, key, item.value)"
           name="close"
-          class="el-icon-close"
+          class="el-icon-close isArrayClose"
           content="关闭"
         ></i>
-        <span> | </span>
+        <span class="divide" v-show="isLastOne(child, item)">|</span>
       </span>
     </div>
     <div
       class="tagItem"
       v-for="(item, key) in tagList"
       :key="key"
-      v-if="!isArray(item.value)"
+      v-if="!isArray(item.label)"
     >
       <span>{{ item.title }}：</span>
-      <span>{{ item.value }} </span>
+      <span>{{ item.label }} </span>
       <i
-        @click="closeItem(item, key)"
+        @click="closeItem(item.label, key, item.value)"
         name="close"
         class="el-icon-close"
         content="关闭"
@@ -58,6 +58,7 @@ export default {
           const childrenValue = this.$parent.$children;
           this.list[key] = {
             title: _format.getFormItemLabelName(key, childrenValue),
+            label: _format.getFormItemLabel(key, childrenValue),
             value: _format.getFormItemValue(key, childrenValue)
           };
         } else {
@@ -68,28 +69,19 @@ export default {
     }
   },
   methods: {
-    closeItem(sourceItem, sourceKey) {
-      console.log(sourceItem, sourceKey);
-      // this.$emit("closeItem", sourceItem, sourceKey);
+    closeItem(sourceItem, sourceKey, sourceValue) {
+      this.$emit("closeItem", sourceItem, sourceKey, sourceValue);
     },
     isArray(val) {
-      console.log(val);
-
       return Object.prototype.toString.call(val) === "[object Array]"
         ? true
         : false;
+    },
+    isLastOne(val1, val2) {
+      return _.last(val2.label) === val1 ? false : true;
     }
   }
 };
-/*
-大家好，我是 Web 前端开发工程师，罗鹏飞。拥有6年的开发工作经验，在 IBM 工作有5年时间。
-
-在 IBM 欧美内部项目，使用 ECM，V18，Bootstrap等技术开发公司的私有云、公有云、混合云的产品页面
-在 IBM 华为项目，使用 React、Ant-Design开发部门的后台管理界面，可以方便运维人员可视化的查看页面性能方面的数据情况
-在 IBM 移动项目，使用 Vue、SCM-UI、eChart等技术开发报表页面，并且会开发一些新的组件，以满足现有框架无法满足的功能
-
-所掌握的技术栈主要有：Vue / Vuex / React / Element-UI / Ant-Design / ES6 / Sass / 微信小程序等技术
-*/
 </script>
 <style lang="scss" scoped>
 .tagArea {
@@ -109,6 +101,24 @@ export default {
       cursor: pointer;
       z-index: 10;
     }
+    .divide {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #e8e8e8;
+      margin: 0 8px;
+      height: 0.9em;
+      width: 1.5px;
+    }
+    // .isArrayClose::after {
+    //   content: "|";
+    //   color: red;
+    //   font-weight: bold;
+    //   margin: 0 3px;
+    // }
+    // .isArrayClose:last-child::after {
+    //   content: "|";
+    //   color: blueviolet;
+    // }
   }
   & .tagItem:last-child {
     margin-right: 0;

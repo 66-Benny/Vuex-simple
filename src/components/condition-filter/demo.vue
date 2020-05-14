@@ -17,22 +17,31 @@
             <el-select v-model="form.region" placeholder="请选择活动区域">
               <el-option label="区域一" value="shanghai"></el-option>
               <el-option label="区域二" value="beijing"></el-option>
+              <el-option label="区域三" value="DL"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="活动时间" prop="date">
-            <el-col :span="11">
-              <el-date-picker
-                v-model="form.date"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-              >
-              </el-date-picker>
-            </el-col>
+          <el-form-item label="活动时间1" prop="date">
+            <el-date-picker
+              v-model="form.date"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+            >
+            </el-date-picker>
           </el-form-item>
+          <el-form-item label="活动时间2" prop="date2">
+            <el-date-picker
+              v-model="form.date2"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+            >
+            </el-date-picker
+          ></el-form-item>
         </template>
         <template slot="showMore">
           <el-form-item label="即时配送" prop="delivery">
@@ -41,7 +50,7 @@
           <el-form-item label="活动性质" prop="type">
             <el-checkbox-group v-model="form.type">
               <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-              <el-checkbox label="地推活动" name="type"></el-checkbox>
+              <el-checkbox label="地推-活动" name="type"></el-checkbox>
               <el-checkbox label="线下主题活动" name="type"></el-checkbox>
               <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
             </el-checkbox-group>
@@ -97,7 +106,9 @@ export default {
       form: {
         name: "",
         region: "",
-        date: [],
+        date: "",
+        date2: "",
+        date3: "",
         delivery: false,
         type: [],
         resource: "",
@@ -109,8 +120,12 @@ export default {
     };
   },
   methods: {
-    onCloseItem(sourceItem, sourceKey) {
-      this.form[sourceKey] = _format.getKeyType(sourceKey);
+    onCloseItem(sourceItem, sourceKey, sourceValue) {
+      this.$set(
+        this.form,
+        sourceKey,
+        _format.removeValue(sourceItem, sourceKey, sourceValue, this.form)
+      );
     }
   }
 };

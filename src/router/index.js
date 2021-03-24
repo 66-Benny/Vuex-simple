@@ -4,6 +4,7 @@ import A from "../page/A";
 import B from "../page/B";
 import C from "../page/C";
 import E from "../page/E";
+import addInfo from "../components/new-add-info";
 
 Vue.use(Router);
 
@@ -26,6 +27,10 @@ export default new Router({
     {
       path: "/E",
       component: E
+    },
+    {
+      path: "/addInfo",
+      component: addInfo
     }
   ]
 });
